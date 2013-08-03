@@ -10,4 +10,11 @@
 
                  ;; for json
                  [org.clojure/data.json "0.2.2"]
+
+                 ;; for excel
+                 [incanter/incanter-excel "1.5.1"]
+
+                 ;; for sqlite
+                 [org.clojure/java.jdbc "0.3.0-alpha4"]
+                 [org.xerial/sqlite-jdbc "3.7.2"]
                  ])

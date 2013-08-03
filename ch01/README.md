@@ -173,7 +173,108 @@ $ wget http://www.ericrochester.com/clj-data-analysis/data/small-sample.json
 * incanter:dataset: https://github.com/liebke/incanter/wiki/datasets
 
 # Excel
+* msdn.microsoft.com/en-us/library/office/cc313154(v=office.14).aspx
+* http://www.openoffice.org/sc/excelfileformat.odt
+
+* for excel
+ - `[incanter/incanter-excel "1.5.1"]`
+
+```
+wget http://www.ericrochester.com/clj-data-analysis/data/small-sample-header.xls
+```
+
+```clj
+(ns getting-data.xls
+  (:use incanter.core
+        incanter.excel))
+
+(read-xls "data/small-sample-header.xls")
+;=> 
+;=> | given-name | surname |    relation |
+;=> |------------+---------+-------------|
+;=> |      Gomez |  Addams |      father |
+;=> |   Morticia |  Addams |      mother |
+;=> |    Pugsley |  Addams |     brother |
+;=> |  Wednesday |  Addams |      sister |
+;=> |     Pubert |  Addams |     brother |
+;=> |     Fester |  Addams |       uncle |
+;=> |  Grandmama |         | grandmother |
+;=> |      Thing |         |        hand |
+;=> |      Lurch |         |      butler |
+;=> |        Itt |         |      cousin |
+;=> |     Cackle |         |      cousin |
+
+```
+
 # JDBC
+http://en.wikipedia.org/wiki/Java_Database_Connectivity
+JDBC
+database에 접근 가능한 java api제공.
+
+1997년 2월 19일, Sun Microsystems가 JDK 1.1의 한 부분으로써 JDBC를 공개.
+
+![jdbcRuntime.gif](http://www.dbvis.com/doc/4.3/doc/ug/getConnected/images/jdbcRuntime.gif)
+
+# SQLLite
+관계형 데이터베이스 매니지 시스템. 서버가 아니라 응용 프로그램에 넣어 사용하는 비교적 가벼운 데이터베이스.
+
+2000년 여름, D. Richard Hipp가 SQLite를 설계함.
+2000년 8월, SQLite 1.0 발표.
+2011년, Hipp은 SQLite database에 대한 UnQL을 추가하기로 계획하고, UnQLite를 개발함.
+
+
+* https://github.com/clojure/java.jdbc
+ - `[org.clojure/java.jdbc "0.3.0-alpha4"]`
+* https://bitbucket.org/xerial/sqlite-jdbc
+ - `[org.xerial/sqlite-jdbc "3.7.2"]`
+
+```
+wget http://www.ericrochester.com/clj-data-analysis/data/small-sample.sqlite
+```
+
+
+* sqlite.clj
+
+```clj
+(ns getting-data.sqlite
+  (:use incanter.core
+        [clojure.java.jdbc :exclude (resultset-seq)]))
+
+;; doall
+;; ref: http://clojuredocs.org/clojure_core/clojure.core/doall
+
+
+(defn load-table-data
+  [db table-name]
+  (let [sql (str "SELECT * FROM " table-name ";")]
+    (with-connection db
+      (with-query-results rs [sql]
+        (to-dataset (doall rs))))))
+
+(def db {:subprotocol "sqlite"
+         :subname "data/small-sample.sqlite"
+         :classname "org.sqlite.JDBC"})
+
+(load-table-data db 'people)
+;=> 
+;=> |   :relation | :surname | :given_name |
+;=> |-------------+----------+-------------|
+;=> |      father |   Addams |       Gomez |
+;=> |      mother |   Addams |    Morticia |
+;=> |     brother |   Addams |     Pugsley |
+;=> |      sister |   Addams |   Wednesday |
+;=> |     brother |   Addams |      Pubert |
+;=> |       uncle |   Addams |      Fester |
+;=> | grandmother |          |   Grandmama |
+;=> |        hand |          |       Thing |
+;=> |      butler |          |       Lurch |
+;=> |      cousin |          |         Itt |
+;=> |      cousin |          |      Cackle |
+
+(view (load-table-data db 'people))
+;=> #<JFrame javax.swing.JFrame[frame0,0,0,400x600,layout=java.awt.BorderLayout,title=Incanter Dataset,resizable,normal,defaultCloseOperation=HIDE_ON_CLOSE,rootPane=javax.swing.JRootPane[,8,31,384x561,layout=javax.swing.JRootPane$RootLayout,alignmentX=0.0,alignmentY=0.0,border=,flags=16777673,maximumSize=,minimumSize=,preferredSize=],rootPaneCheckingEnabled=true]>
+```
+
 # XML
 
 # RDF
