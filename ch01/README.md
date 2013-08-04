@@ -358,5 +358,177 @@ http://www.st.cs.uni-saarland.de/edu/seminare/2005/advanced-fp/docs/huet-zipper.
 
 ```
 
+# html
+* enlive: https://github.com/cgrand/enlive
+ - `[enlive "1.1.1"]`
+ - tutorial: https://github.com/swannodette/enlive-tutorial
+
+## table
+
+`wget http://www.ericrochester.com/clj-data-analysis/data/small-sample-table.html`
+
+* html-table.clj
+
+```clj
+(ns getting-data.html-table
+  (:use incanter.core)
+  (:require [clojure.string :as string]
+            [net.cgrand.enlive-html :as html]))
+
+(import [java.net URL])
+
+;; data/small-sample-table.html
+;; <table id="data" border="0">
+;;   <tr><th>Given Name</th> <th>Surname</th> <th>Relation</th></tr>
+;;   <tr><td>Gomez</td> <td>Addams</td> <td>father</td></tr>
+;;   ...
+;; </table>
+
+(defn to-keyword [input]
+  (-> input
+      string/lower-case
+      (string/replace \space \-)
+      keyword))
+
+(to-keyword "Hello World")
+;=> :hello-world
+
+
+(defn load-data [url]
+  (let [html (html/html-resource (URL. url))
+
+        ;; <table id="data" border="0">
+        table (html/select html [:table#data])
+
+        ;;   <tr><th>Given Name</th> <th>Surname</th> <th>Relation</th></tr>
+        headers (->> (html/select table [:tr :th])
+                     (map html/text)
+                     (map to-keyword)
+                     vec)
+
+        ;;   <tr><td>Gomez</td> <td>Addams</td> <td>father</td></tr>
+        rows (->> (html/select table [:tr])
+                  (map #(html/select % [:td]))
+                  (map #(map html/text %))
+                  (filter seq))]
+    (dataset headers rows)))
+
+(html/html-resource (URL. "http://www.ericrochester.com/clj-data-analysis/data/small-sample-table.html"))
+;=> ({:type :dtd, :data ["HTML" nil nil]} ...
+
+(html/html-resource (java.io.StringReader. (slurp "data/small-sample-table.html")))
+;=> ({:type :dtd, :data ["HTML" nil nil]} ...
+
+(load-data "http://www.ericrochester.com/clj-data-analysis/data/small-sample-table.html");=> 
+;=> | :given-name | :surname |   :relation |
+;=> |-------------+----------+-------------|
+;=> |       Gomez |   Addams |      father |
+;=> |    Morticia |   Addams |      mother |
+;=> |     Pugsley |   Addams |     brother |
+;=> |   Wednesday |   Addams |      sister |
+;=> |      Pubert |   Addams |     brother |
+;=> |      Fester |   Addams |       uncle |
+;=> |   Grandmama |          | grandmother |
+;=> |       Thing |          |        hand |
+;=> |       Lurch |          |      butler |
+;=> |         Itt |          |      cousin |
+;=> |      Cackle |          |      cousin |
+
+```
+
+## ul(unordered list)
+
+* html-list.clj
+
+```clj
+(ns getting-data.html-list
+  (:use incanter.core)
+  (:require [clojure.string :as string]
+            [net.cgrand.enlive-html :as html]))
+
+(import [java.net URL])
+
+;; data/small-sample-list.html
+;; <article>
+;;   <header>
+;;     <h2 id='addams'>Addam's Family</h2>
+;;   </header>
+;;   <p>Here's some information about the Addam's Family.</p>
+;;   <ul>
+;;     <li><em>Gomez Addams</em> &mdash; father</li>
+;;     <li><em>Morticia Addams</em> &mdash; mother</li>
+;;     ...
+;;   </ul>
+;; </article>
+;; 
+;; <article>
+;;   <header>
+;;     <h2 id='munsters'>The Munsters</h2>
+;;   </header>
+;;   <p>A different take.</p>
+;;   <ul>
+;;     <li><em>Herman Munster</em> &mdash; father</li>
+;;     ...
+;;   </ul>
+;; </article>
+
+(defn get-family
+  ([article]
+     ;; <article>
+     ;;   <header>
+     ;;     <h2 id='addams'>Addam's Family</h2>
+     ;;   </header>
+
+     (string/join (map html/text (html/select article [:header :h2])))))
+
+(defn get-person
+  ([li]
+     ;;     <li><em>Gomez Addams</em> &mdash; father</li>
+     ;; pnames: Gomez Addams
+     ;; rel: - father
+     (let [[{pnames :content} rel] (:content li)]
+       (println pnames)
+       {:name (apply str pnames)
+        :relationship (string/trim rel)})))
+
+(defn get-rows
+  ([article]
+     (let [family (get-family article)]
+       (map #(assoc % :family family)
+
+            ;;   <ul>
+            ;;     <li><em>Gomez Addams</em> &mdash; father</li>
+            (map get-person (html/select article [:ul :li]))))))
+
+(defn load-data [html-url]
+  (let [html (html/html-resource (URL. html-url))
+        articles (html/select html [:article])]
+    (to-dataset (mapcat get-rows articles))))
+
+(load-data "http://www.ericrochester.com/clj-data-analysis/data/small-sample-list.html")
+;=> 
+;=> |        :family |            :name | :relationship |
+;=> |----------------+------------------+---------------|
+;=> | Addam's Family |     Gomez Addams |      ? father |
+;=> | Addam's Family |  Morticia Addams |      ? mother |
+;=> | Addam's Family |   Pugsley Addams |     ? brother |
+;=> | Addam's Family | Wednesday Addams |      ? sister |
+;=> | Addam's Family |    Pubert Addams |     ? brother |
+;=> | Addam's Family |    Fester Addams |       ? uncle |
+;=> | Addam's Family |        Grandmama | ? grandmother |
+;=> | Addam's Family |            Thing |        ? hand |
+;=> | Addam's Family |            Lurch |      ? butler |
+;=> | Addam's Family |       Cousin Itt |      ? cousin |
+;=> | Addam's Family |    Cousin Cackle |      ? cousin |
+;=> |   The Munsters |   Herman Munster |      ? father |
+;=> |   The Munsters |     Lily Munster |      ? mother |
+;=> |   The Munsters |  Grandpa Dracula | ? grandfather |
+;=> |   The Munsters |    Eddie Munster |     ? brother |
+;=> |   The Munsters |  Marilyn Munster |      ? sister |
+;=> |   The Munsters |        The Raven |         ? pet |
+
+```
+
 # RDF
+
 # SPARQL

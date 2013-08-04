@@ -17,4 +17,7 @@
                  ;; for sqlite
                  [org.clojure/java.jdbc "0.3.0-alpha4"]
                  [org.xerial/sqlite-jdbc "3.7.2"]
+
+                 ;; for html - table, ul
+                 [enlive "1.1.1"]
                  ])
