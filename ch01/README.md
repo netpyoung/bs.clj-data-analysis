@@ -277,7 +277,7 @@ wget http://www.ericrochester.com/clj-data-analysis/data/small-sample.sqlite
 
 # XML (Extensible Markup Language)
 
-* 1960년대, IBM에서 Charles Goldfarb, Ed Mosher, Ray Lorie가 GML(__G__oldfarb, __M__osher and __L__orie)을 개발.
+* 1960년대, IBM에서 Charles Goldfarb, Ed Mosher, Ray Lorie가 GML( __G__oldfarb, __M__osher and __L__orie)을 개발.
 * Charles Goldfarb가 `mark-up language`란 용어를 만들었고, SGML(Standard Generalised Markup Language)가 탄생함.
 * 1986년, SGML이 ISO에 채택됨.
 * 1996년, Sun Microsystems에서 XML개발이 시작됨. Jon Bosak과 그의 팀원들이 SGML을 재모듈링함.
@@ -297,11 +297,11 @@ wget http://www.ericrochester.com/clj-data-analysis/data/small-sample.sqlite
 `wget http://www.ericrochester.com/clj-data-analysis/data/small-sample.xml`
 
 
-clojure-doc zipper
-http://clojure-doc.org/articles/tutorials/parsing_xml_with_zippers.html
-
-Gerard Huet의 논문 The Zipper
-http://www.st.cs.uni-saarland.de/edu/seminare/2005/advanced-fp/docs/huet-zipper.pdf
+## 참고
+* clojure-doc zipper
+ - http://clojure-doc.org/articles/tutorials/parsing_xml_with_zippers.html
+* Gerard Huet의 논문 The Zipper
+ - http://www.st.cs.uni-saarland.de/edu/seminare/2005/advanced-fp/docs/huet-zipper.pdf
 
 * xml.clj
 
@@ -529,6 +529,40 @@ http://www.st.cs.uni-saarland.de/edu/seminare/2005/advanced-fp/docs/huet-zipper.
 
 ```
 
-# RDF
+# Symantic web
+* 시맨틱 웹(Semantic Web)은 현재의 인터넷과 같은 분산환경에서 리소스(웹 문서, 각종 화일, 서비스 등)에 대한 정보와 자원 사이의 관계-의미 정보(Semanteme)를 기계(컴퓨터)가 처리할 수 있는 온톨로지형태로 표현하고, 이를 자동화된 기계(컴퓨터)가 처리하도록 하는 프레임워크이자 기술이다. 웹의 창시자인 팀 버너스 리가 1998년 제안했고 현재 W3C에 의해 표준화 작업이 진행중이다. - http://ko.wikipedia.org/wiki/%EC%8B%9C%EB%A7%A8%ED%8B%B1_%EC%9B%B9
+
+![semantic-web-stack.png](http://upload.wikimedia.org/wikipedia/en/3/37/Semantic-web-stack.png)
+
+# RDF(Resource Description Framework)
+
+Facebook에서 사용하고 있는 Open Graph Protocol 역시, RDF를 기반으로 함.
+
+## Turtle (Terse RDF Triple Language)
+* filename extension: `.ttl`
+
+
+* https://github.com/drlivingston/kr
+
+
+`wget http://telegraphis.net/data/currencies/currencies.ttl`
+
+
+
+
+Sesame는 RDF데이터를 다루는 Java 기반의 사실상(de-facto) 표준 프래임워크.
+Sesame는 두가지 query 언어를 지원함: SPARQL, SeRQL.
+
+RDF는 전체 세계를 statement의 집합이라 봄.
+각 statement는 적어도 3개의 부분으로 구성됨.
+
+subject
+predicate
+object
+
+subject와 predicate는 URI를 가질 수 있음.
+object는 문자열이나 URI가 될 수 이음.
+
+
 
 # SPARQL

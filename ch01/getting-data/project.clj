@@ -20,4 +20,10 @@
 
                  ;; for html - table, ul
                  [enlive "1.1.1"]
+
+                 ;; for rdf
+                 [edu.ucdenver.ccp/kr-sesame-core "1.4.8"]
+
+                 [org.clojure/tools.logging "0.2.6"]
+                 [org.slf4j/slf4j-simple "1.7.5"]
                  ])
