@@ -535,34 +535,118 @@ wget http://www.ericrochester.com/clj-data-analysis/data/small-sample.sqlite
 ![semantic-web-stack.png](http://upload.wikimedia.org/wikipedia/en/3/37/Semantic-web-stack.png)
 
 # RDF(Resource Description Framework)
-
 Facebook에서 사용하고 있는 Open Graph Protocol 역시, RDF를 기반으로 함.
-
-## Turtle (Terse RDF Triple Language)
-* filename extension: `.ttl`
-
-
-* https://github.com/drlivingston/kr
-
-
-`wget http://telegraphis.net/data/currencies/currencies.ttl`
-
-
-
-
-Sesame는 RDF데이터를 다루는 Java 기반의 사실상(de-facto) 표준 프래임워크.
-Sesame는 두가지 query 언어를 지원함: SPARQL, SeRQL.
 
 RDF는 전체 세계를 statement의 집합이라 봄.
 각 statement는 적어도 3개의 부분으로 구성됨.
 
-subject
-predicate
-object
+subject, predicate, object
 
 subject와 predicate는 URI를 가질 수 있음.
-object는 문자열이나 URI가 될 수 이음.
+object는 문자열이나 URI가 될 수 있음.
 
 
+## Turtle (Terse RDF Triple Language)
+* filename extension: `.ttl`
 
-# SPARQL
+다음과 같은 문장을
+
+```
+The book with ISBN 006251587X has the creator Tim Berners-Lee.
+The book with ISBN 006251587X has the title "Weaving the Web".
+Tim Berners-Lee's title is "Director".
+```
+
+ttl형식으로 나타내면,
+
+```ttl
+@prefix dc: <http://purl.org/dc/elements/1.1/> .
+@prefix v: <http://www.w3.org/2006/vcard/> .
+
+<urn:isbn:006251587X>
+    dc:creator <http://www.w3.org/People/Berners-Lee/card#i> ;
+    dc:title "Weaving the Web" .
+
+<http://www.w3.org/People/Berners-Lee/card#i>
+    v:title "Director" .
+```
+
+
+# SPARQL(SPARQL Protocol and RDF Query Language)
+
+* https://github.com/drlivingston/kr
+ - RDF지원.
+ - `[kr-sesame-core "1.4.8"]`
+
+`wget http://telegraphis.net/data/currencies/currencies.ttl`
+
+Sesame는 RDF데이터를 다루는 Java 기반의 사실상(de-facto) 표준 프래임워크.
+Sesame는 두가지 query 언어를 지원함: SPARQL, SeRQL.
+
+
+ttl파일중 일부.
+
+```ttl
+@prefix code: <http://telegraphis.net/ontology/measurement/code#>.
+@prefix money: <http://telegraphis.net/ontology/money/money#>.
+@prefix owl: <http://www.w3.org/2002/07/owl#>.
+@prefix rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#>.
+
+<http://telegraphis.net/data/currencies/TWD#TWD> a money:Currency;
+    money:name "New Taiwan dollar"@en;
+    money:shortName "dollar"@en;
+    money:symbol "NT$";
+    money:minorName "cent"@en;
+    money:minorExponent "1";
+    money:isoAlpha "TWD";
+    money:isoNumeric "901";
+    code:hasCode [ a code:Code;
+        code:inCodeScheme <http://telegraphis.net/data/currencies/codeSchemes#iso4217num>;
+        rdf:value "901" ];
+    code:hasCode [ a code:Code;
+        code:inCodeScheme <http://telegraphis.net/data/currencies/codeSchemes#iso4217al>;
+        rdf:value "TWD" ].
+<http://telegraphis.net/data/currencies/TWD#TWD> money:currencyOf <http://telegraphis.net/data/countries/TW#TW>.
+<http://telegraphis.net/data/currencies/TWD#TWD> owl:sameAs <http://dbpedia.org/resource/New_Taiwan_dollar>.
+```
+
+쿼리와 그 결과.
+
+```clj
+(def q '((?/c rdf/type money/Currency)
+         (?/c money/name ?/full_name)
+         (?/c money/shortName ?/name)
+         (?/c money/symbol ?/symbol)
+         (?/c money/minorName ?/minor_name)
+         (?/c money/minorExponent ?/minor_exp)
+         (?/c money/isoAlpha ?/iso)
+         (?/c money/currencyOf ?/country)))
+
+;; ?c          currency/TWD#TWD
+;; ?full_name  New Taiwan dollar
+;; ?name       dollar
+;; ?symbol     NT$
+;; ?minor_name cent
+;; ?minor_exp  1
+;; ?iso        TWD
+;; ?country    http://telegraphis.net/data/currencies/TWD#TWD
+```
+
+* 참고: http://www.snee.com/bobdc.blog/2012/04/simple-federated-queries-with.html
+
+
+# Agrregate
+* http://www.x-rates.com/
+ - 세계 환율 정보사이트, 국가별 통화, 통화계산기, 최신뉴스 등 제공.
+
+* https://github.com/clj-time/clj-time
+ - [joda](http://joda-time.sourceforge.net/) 라이브러리 와퍼
+ - `[clj-time "0.5.1"]`
+
+
+# 멍미... 1.5.2가 릴리즈됐네...
+* https://github.com/liebke/incanter/commit/5d5c26d207878c910377c8a8e062024465cac17b
+
+## RDF에 대해 더 자세히 알고 싶다면.
+* http://www.learningsparql.com/
+* http://dbpedia.org/sparql
