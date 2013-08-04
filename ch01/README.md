@@ -275,7 +275,88 @@ wget http://www.ericrochester.com/clj-data-analysis/data/small-sample.sqlite
 ;=> #<JFrame javax.swing.JFrame[frame0,0,0,400x600,layout=java.awt.BorderLayout,title=Incanter Dataset,resizable,normal,defaultCloseOperation=HIDE_ON_CLOSE,rootPane=javax.swing.JRootPane[,8,31,384x561,layout=javax.swing.JRootPane$RootLayout,alignmentX=0.0,alignmentY=0.0,border=,flags=16777673,maximumSize=,minimumSize=,preferredSize=],rootPaneCheckingEnabled=true]>
 ```
 
-# XML
+# XML (Extensible Markup Language)
+
+* 1960년대, IBM에서 Charles Goldfarb, Ed Mosher, Ray Lorie가 GML(__G__oldfarb, __M__osher and __L__orie)을 개발.
+* Charles Goldfarb가 `mark-up language`란 용어를 만들었고, SGML(Standard Generalised Markup Language)가 탄생함.
+* 1986년, SGML이 ISO에 채택됨.
+* 1996년, Sun Microsystems에서 XML개발이 시작됨. Jon Bosak과 그의 팀원들이 SGML을 재모듈링함.
+* 1998년 2월, XML은 W3C Recommendation이 됨.
+
+
+* tag
+ - `<tag></tag>`
+ - `<empty-tag />`
+* element
+ - `<tag>element</tag>`
+* attribute
+ - `<tag attribute="hello attribute">element</tag>`
+* comment
+ - `<!-- comment -->`
+
+`wget http://www.ericrochester.com/clj-data-analysis/data/small-sample.xml`
+
+
+clojure-doc zipper
+http://clojure-doc.org/articles/tutorials/parsing_xml_with_zippers.html
+
+Gerard Huet의 논문 The Zipper
+http://www.st.cs.uni-saarland.de/edu/seminare/2005/advanced-fp/docs/huet-zipper.pdf
+
+* xml.clj
+
+```clj
+(ns getting-data.xml
+  (:use incanter.core
+        clojure.xml
+        [clojure.zip :exclude [next replace remove] :as z]))
+
+
+;; <?xml version="1.0" encoding="utf-8"?>
+;; <data>
+;;   <person>
+;;     <given-name>Gomez</given-name>
+;;     <surname>Addams</surname>
+;;     <relation>father</relation>
+;;   </person>
+;;   ...
+;; </data>
+
+
+(defn load-xml-data [xml-file first-data next-data]
+  (let [data-map (fn [node]
+                   [(:tag node) (first (:content node))])]
+    (->> (parse xml-file)
+         z/xml-zip
+
+         ;; ??
+         first-data
+         (iterate next-data)
+         (take-while #(not (nil? %)))
+         (map z/children)
+
+         (map #(mapcat data-map %))
+         (map #(apply array-map %))
+
+         to-dataset)))
+
+(load-xml-data "data/small-sample.xml" z/down z/right)
+;=> 
+;=> | :given-name | :surname |   :relation |
+;=> |-------------+----------+-------------|
+;=> |       Gomez |   Addams |      father |
+;=> |    Morticia |   Addams |      mother |
+;=> |     Pugsley |   Addams |     brother |
+;=> |   Wednesday |   Addams |      sister |
+;=> |      Pubert |   Addams |     brother |
+;=> |      Fester |   Addams |       uncle |
+;=> |   Grandmama |          | grandmother |
+;=> |       Thing |          |        hand |
+;=> |       Lurch |          |      butler |
+;=> |         Itt |          |      cousin |
+;=> |      Cackle |          |      cousin |
+
+```
 
 # RDF
 # SPARQL
