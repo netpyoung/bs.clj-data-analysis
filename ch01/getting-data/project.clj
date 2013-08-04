@@ -26,4 +26,7 @@
 
                  [org.clojure/tools.logging "0.2.6"]
                  [org.slf4j/slf4j-simple "1.7.5"]
+
+                 ;; for agregate
+                 [clj-time "0.5.1"]
                  ])

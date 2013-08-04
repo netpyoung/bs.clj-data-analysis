@@ -565,4 +565,8 @@ object는 문자열이나 URI가 될 수 이음.
 
 
 
-# SPARQL
+# SPARQL(Simple Protocol And RDF Query Language)
+
+# Agrregate
+* http://www.x-rates.com/
+ - 세계 환율 정보사이트, 국가별 통화, 통화계산기, 최신뉴스 등 제공.
