@@ -133,6 +133,7 @@ of it."
              (map get-data (find-data div))))))
 
 ;; gogoog
+
 (def t-store (init-kb (kb-memstore)))
 
 (def q
@@ -167,6 +168,7 @@ of it."
   ;; 
   (load-exchange-data kb (URL. data-url))
   (to-dataset (map (partial rekey col-map) (query kb q))))
+
 
 (view (aggregate-data t-store "data/currencies.ttl"
                 "http://www.x-rates.com/table/?from=USD&amount=1.00"

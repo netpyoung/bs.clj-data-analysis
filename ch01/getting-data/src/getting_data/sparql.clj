@@ -134,7 +134,6 @@
 
     pull-result
 
-    ;; And create a dataset.
     to-dataset))
 
 
@@ -162,4 +161,3 @@
  (symbol (str dbpedia "/United_Arab_Emirates_dirham"))
  (init-kb (kb-memstore)))
 ;=> "PREFIX rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#> \nSELECT ?p ?o \nWHERE {  <http://dbpedia.org/resource/United_Arab_Emirates_dirham> ?p ?o .  \n FILTER (  ( ! isLiteral(?o)  \n ||  (  datatype(?o)  != <http://www.w3.org/1999/02/22-rdf-syntax-ns#langString> )  \n ||  (  lang(?o)  = \"en\" )  ) \n )  \n} LIMIT 200 "
-
