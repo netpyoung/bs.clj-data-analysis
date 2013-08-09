@@ -572,6 +572,9 @@ ttl형식으로 나타내면,
 ```
 
 
+![Figure2-1.jpg](img/Figure2-1.jpg)
+![Figure2-2.jpg](img/Figure2-2.jpg)
+
 # SPARQL(SPARQL Protocol and RDF Query Language)
 
 * https://github.com/drlivingston/kr
