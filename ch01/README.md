@@ -542,11 +542,12 @@ RDF는 전체 세계를 statement의 집합이라 봄.
 
 subject, predicate, object
 
-subject와 predicate는 URI를 가질 수 있음.
-object는 문자열이나 URI가 될 수 있음.
-
+* subject: URI, blank node
+* predicate: URI
+* obbject: URI, blank node, Unicode string
 
 ## Turtle (Terse RDF Triple Language)
+
 * filename extension: `.ttl`
 
 다음과 같은 문장을
@@ -571,8 +572,12 @@ ttl형식으로 나타내면,
     v:title "Director" .
 ```
 
+* normal
 
 ![Figure2-1.jpg](img/Figure2-1.jpg)
+
+* with blank node
+
 ![Figure2-2.jpg](img/Figure2-2.jpg)
 
 # SPARQL(SPARQL Protocol and RDF Query Language)
