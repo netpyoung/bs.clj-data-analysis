@@ -1,0 +1,33 @@
+div.chart {
+    height: 450px;
+    width: 650px;
+}
+
+body {
+    font-family: Helvetica, Arial, sans-serif;
+    font-size: smaller;
+}
+
+#force {
+    width: 650px;
+    height: 500px;
+}
+
+#force .node {
+    stroke: #fff;
+    stroke-width: 1.5px;
+}
+
+#force .link {
+    stroke: #999;
+    stroke-opacity: 1;
+}
+
+#datapane {
+    float: right;
+    width: 250px;
+}
+
+#datapane dt {
+    font-weight: bold;
+}
